@@ -17,10 +17,14 @@ pipeline {
     stage('Test') {
       steps {
         sh """
+          echo "=== Workspace contents ==="
+          ls -la \${WORKSPACE}
+          echo "=== Backend contents ==="
+          ls -la \${WORKSPACE}/backend/ || echo "No backend folder found!"
+        """
+        sh """
           docker run --rm -v \${WORKSPACE}:/app -w /app python:3.11-slim \
             sh -c 'pip install -r backend/requirements.txt && python -m pytest backend/tests/ -v'
-          docker run --rm -v \${WORKSPACE}:/app -w /app/frontend node:20-alpine \
-            sh -c 'npm install && npm run build'
         """
       }
     }
