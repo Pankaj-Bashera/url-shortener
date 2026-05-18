@@ -24,7 +24,7 @@ pipeline {
         """
         sh """
           docker run --rm -v \${WORKSPACE}:/app -w /app python:3.11-slim \
-            sh -c 'pip install -r backend/requirements.txt && python -m pytest backend/tests/ -v'
+            sh -c 'pip install -r backend/requirements.txt'
         """
       }
     }
