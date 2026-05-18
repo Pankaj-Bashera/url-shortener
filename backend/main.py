@@ -23,7 +23,7 @@ class URLRequest(BaseModel):
 
 @app.post('/shorten')
 def shorten(req: URLRequest):
-    short_id = hashlib.md5(req.original_url.encode()).hexdigest()[:6]
+    short_id = hashlib.md5(req.original_url.encode(), usedforsecurity=False).hexdigest()[:6]
     conn = sqlite3.connect('urls.db')
     conn.execute('INSERT OR IGNORE INTO urls VALUES (?,?)', (short_id, req.original_url))
     conn.commit()

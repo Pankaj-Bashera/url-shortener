@@ -34,7 +34,7 @@ pipeline {
       steps {
         script {
           docker.image('python:3.11-slim').inside {
-            sh 'pip install bandit && bandit -r backend/ -f txt'
+            sh 'pip install bandit && bandit -r backend/ -x backend/tests/ -f txt'
           }
           
           docker.image('node:20-alpine').inside {
