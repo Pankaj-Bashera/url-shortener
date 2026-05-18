@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-            image 'python:3.11-slim'
-            args '-u root'
-        }
-  }
+  agent any
 
   environment {
     DOCKER_IMAGE       = 'panku0101/url-shortener'  
@@ -22,14 +17,13 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh 'pip install -r backend/requirements.txt'
-        sh 'python -m pytest backend/tests/ -v'
+        sh 'docker run --rm -v $(pwd):/app -w /app python:3.11-slim sh -c "pip install -r backend/requirements.txt && python -m pytest backend/tests/ -v"'
       }
     }
 
     stage('Security Scan') {
       steps {
-        sh 'pip install bandit && bandit -r backend/ -f txt'
+        sh 'docker run --rm -v $(pwd):/app -w /app python:3.11-slim sh -c "pip install bandit && bandit -r backend/ -f txt"'
         sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:latest || true'
       }
     }
