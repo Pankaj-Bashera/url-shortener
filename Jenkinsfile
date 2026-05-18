@@ -71,7 +71,7 @@ pipeline {
           curl -LO "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
           chmod +x ./kubectl
 
-          echo "\${KUBECONFIG}" > ./kube.conf
+          printf "%s" "$KUBECONFIG" > ./kube.conf
           chmod 600 ./kube.conf
 
           ./kubectl --kubeconfig=./kube.conf apply -f k8s/deployment.yaml
