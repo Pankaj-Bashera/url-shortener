@@ -132,7 +132,7 @@ kubectl apply -f k8s/service.yaml
 kubectl apply -f k8s/hpa.yaml
 
 # Verify
-kubectl get pods               # should show 2 Running
+kubectl get pods               
 kubectl get deployments
 kubectl get services
 kubectl get hpa
