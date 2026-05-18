@@ -1,0 +1,30 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:js": "babel src --out-dir dist",
+    "watch:js": "babel src --out-dir dist --watch",
+    "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
+    "build": "npm run build:css && npm run build:js",
+    "watch": "npm run watch:css & npm run watch:js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@babel/cli": "^7.28.6",
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.5",
+    "@babel/preset-react": "^7.28.5",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.11",
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.14",
+    "tailwindcss": "^3.4.19"
+  }
+}

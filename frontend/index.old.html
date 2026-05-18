@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>URL Shortener — INT377</title>
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: #f1f5f9;
+      background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.05);
+      max-width: 480px;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      background-color: #0f172a;
+      background-image: radial-gradient(#1e293b 1px, transparent 1px);
+      background-size: 12px 12px;
+      padding: 32px 32px 24px 32px;
+      position: relative;
+      border-bottom: 4px solid #3b82f6;
+    }
+
+    h1 { 
+      color: #ffffff; 
+      font-size: 1.6rem; 
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .icon {
+      color: #3b82f6;
+    }
+
+    p.subtitle { 
+      color: #94a3b8; 
+      font-size: 0.9rem; 
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .card-body {
+      padding: 32px;
+      background: #ffffff;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    input[type="text"]::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
+    }
+
+    input[type="text"]:focus { 
+      background: #ffffff;
+      border-color: #3b82f6; 
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+
+    .link-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+
+    input[type="text"]:focus + .link-icon {
+      color: #3b82f6;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+
+    button:hover { 
+      background: #2563eb; 
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .result {
+      margin-top: 24px;
+      padding: 16px;
+      background: #f0fdf4;
+      border-left: 4px solid #22c55e;
+      border-radius: 0 8px 8px 0;
+      display: none;
+      font-size: 0.95rem;
+      color: #166534;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .result a { 
+      color: #15803d; 
+      font-weight: 700;
+      text-decoration: none;
+      word-break: break-all;
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 1px;
+    }
+
+    .result a:hover {
+      color: #166534;
+    }
+
+    .result.error { 
+      background: #fef2f2; 
+      color: #991b1b; 
+      border-left-color: #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <h1>
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+        URL Shortener
+      </h1>
+      <p class="subtitle">INT377 — Cloud & DevOps</p>
+    </div>
+    
+    <div class="card-body">
+      <div class="input-group">
+        <input id="url" type="text" placeholder="Paste your long URL here…" autocomplete="off" />
+        <svg class="link-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+      </div>
+      
+      <button onclick="shorten()">
+        Shorten URL
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+      
+      <div class="result" id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    async function shorten() {
+      const urlInput = document.getElementById('url');
+      const resultBox = document.getElementById('result');
+      const url = urlInput.value.trim();
+
+      if (!url) {
+        showResult('Please enter a URL.', true);
+        return;
+      }
+
+      try {
+        const res = await fetch('/shorten', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ original_url: url })
+        });
+
+        if (!res.ok) throw new Error('Server error');
+
+        const data = await res.json();
+        showResult(`Short URL: <a href="${data.short_url}" target="_blank">${data.short_url}</a>`, false);
+      } catch (err) {
+        showResult('Error: Could not shorten URL. Is the API running?', true);
+      }
+    }
+
+    function showResult(html, isError) {
+      const box = document.getElementById('result');
+      box.innerHTML = html;
+      box.style.display = 'block';
+      box.className = 'result' + (isError ? ' error' : '');
+    }
+
+    document.getElementById('url').addEventListener('keydown', e => {
+      if (e.key === 'Enter') shorten();
+    });
+  </script>
+</body>
+</html>
