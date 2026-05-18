@@ -18,12 +18,14 @@ pipeline {
     stage('Test') {
       steps {
         sh 'docker run --rm -v $(pwd):/app -w /app python:3.11-slim sh -c "pip install -r backend/requirements.txt && python -m pytest backend/tests/ -v"'
+        sh 'docker run --rm -v $(pwd):/app -w /app/frontend node:20-alpine sh -c "npm install && npm run build"'
       }
     }
 
     stage('Security Scan') {
       steps {
         sh 'docker run --rm -v $(pwd):/app -w /app python:3.11-slim sh -c "pip install bandit && bandit -r backend/ -f txt"'
+        sh 'docker run --rm -v $(pwd):/app -w /app/frontend node:20-alpine sh -c "npm audit --audit-level=high || true"'
         sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:latest || true'
       }
     }
