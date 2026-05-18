@@ -9,12 +9,6 @@ pipeline {
 
   stages {
 
-    stage('Checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/Pankaj-Bashera/url-shortener.git'
-      }
-    }
-
     stage('Test') {
       steps {
         sh 'docker run --rm -v $(pwd):/app -w /app python:3.11-slim sh -c "pip install -r backend/requirements.txt && python -m pytest backend/tests/ -v"'
