@@ -22,22 +22,32 @@ pipeline {
           echo "=== Backend contents ==="
           ls -la \${WORKSPACE}/backend/ || echo "No backend folder found!"
         """
-        sh """
-          docker run --rm -v \${WORKSPACE}:/app -w /app/backend python:3.11-slim \
-            sh -c 'pip install -r requirements.txt'
-        """
+        script {
+          // Jenkins handles the workspace volume mounting automatically here
+          docker.image('python:3.11-slim').inside {
+            sh 'pip install -r backend/requirements.txt'
+          }
+        }
       }
     }
 
     stage('Security Scan') {
       steps {
-        sh """
-          docker run --rm -v \${WORKSPACE}:/app -w /app python:3.11-slim \
-            sh -c 'pip install bandit && bandit -r backend/ -f txt'
-          docker run --rm -v \${WORKSPACE}:/app -w /app/frontend node:20-alpine \
-            sh -c 'npm audit --audit-level=high || true'
-          trivy image --exit-code 1 --severity HIGH,CRITICAL \${DOCKER_IMAGE}:latest || true
-        """
+        script {
+          // Run Python security scan
+          docker.image('python:3.11-slim').inside {
+            sh 'pip install bandit && bandit -r backend/ -f txt'
+          }
+          
+          // Run Node security scan
+          docker.image('node:20-alpine').inside {
+            // Change directory to frontend before running npm commands
+            sh 'cd frontend && npm audit --audit-level=high || true'
+          }
+        }
+        
+        // Trivy scan on the built image
+        sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL ${DOCKER_IMAGE}:latest || true'
       }
     }
 
