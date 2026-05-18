@@ -4,7 +4,6 @@ pipeline {
   environment {
     DOCKER_IMAGE       = 'panku0101/url-shortener'
     DOCKER_CREDENTIALS = credentials('dockerhub-creds')
-    KUBECONFIG         = credentials('kubeconfig')
   }
 
   stages {
@@ -61,26 +60,6 @@ pipeline {
           echo \${DOCKER_CREDENTIALS_PSW} | docker login -u \${DOCKER_CREDENTIALS_USR} --password-stdin
           docker push \${DOCKER_IMAGE}:\${BUILD_NUMBER}
           docker push \${DOCKER_IMAGE}:latest
-        """
-      }
-    }
-
-    stage('Deploy to Kubernetes') {
-      steps {
-        sh """
-          curl -LO "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
-          chmod +x ./kubectl
-
-          printf "%s" "$KUBECONFIG" > ./kube.conf
-          chmod 600 ./kube.conf
-
-          ./kubectl --kubeconfig=./kube.conf apply -f k8s/deployment.yaml
-          ./kubectl --kubeconfig=./kube.conf apply -f k8s/service.yaml
-          ./kubectl --kubeconfig=./kube.conf apply -f k8s/hpa.yaml
-          ./kubectl --kubeconfig=./kube.conf set image deployment/url-shortener url-shortener=\${DOCKER_IMAGE}:\${BUILD_NUMBER}
-          ./kubectl --kubeconfig=./kube.conf rollout status deployment/url-shortener
-          
-          rm ./kube.conf
         """
       }
     }
