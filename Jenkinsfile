@@ -68,20 +68,19 @@ pipeline {
     stage('Deploy to Kubernetes') {
       steps {
         sh """
-          echo "=== Downloading kubectl ==="
-          # Download a stable version of the kubectl binary
           curl -LO "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
-          
-          # Make the binary executable
           chmod +x ./kubectl
 
-          echo "=== Applying Kubernetes Manifests ==="
-          # Note the use of ./kubectl to run the local file we just downloaded
-          ./kubectl apply -f k8s/deployment.yaml
-          ./kubectl apply -f k8s/service.yaml
-          ./kubectl apply -f k8s/hpa.yaml
-          ./kubectl set image deployment/url-shortener url-shortener=\${DOCKER_IMAGE}:\${BUILD_NUMBER}
-          ./kubectl rollout status deployment/url-shortener
+          echo "\${KUBECONFIG}" > ./kube.conf
+          chmod 600 ./kube.conf
+
+          ./kubectl --kubeconfig=./kube.conf apply -f k8s/deployment.yaml
+          ./kubectl --kubeconfig=./kube.conf apply -f k8s/service.yaml
+          ./kubectl --kubeconfig=./kube.conf apply -f k8s/hpa.yaml
+          ./kubectl --kubeconfig=./kube.conf set image deployment/url-shortener url-shortener=\${DOCKER_IMAGE}:\${BUILD_NUMBER}
+          ./kubectl --kubeconfig=./kube.conf rollout status deployment/url-shortener
+          
+          rm ./kube.conf
         """
       }
     }
