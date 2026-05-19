@@ -41,10 +41,7 @@ var TopNav = function TopNav() {
   }, /*#__PURE__*/React.createElement(Link, {
     to: "/",
     className: "font-medium pb-5 pt-5 border-b-2 ".concat(isActive('/') && location.pathname === '/' ? 'text-primary border-primary' : 'text-on-surface-variant border-transparent hover:text-primary')
-  }, "Home"), /*#__PURE__*/React.createElement(Link, {
-    to: "/dashboard",
-    className: "font-medium pb-5 pt-5 border-b-2 ".concat(isActive('/dashboard') ? 'text-primary border-primary' : 'text-on-surface-variant border-transparent hover:text-primary')
-  }, "Dashboard"), /*#__PURE__*/)), /*#__PURE__*/React.createElement("div", {
+  }, "Home"), /*#__PURE__*/)), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-md"
   }, /*#__PURE__*/React.createElement(Link, {
     to: "/",
@@ -239,9 +236,6 @@ var App = function App() {
   return /*#__PURE__*/React.createElement(MemoryRouter, null, /*#__PURE__*/React.createElement(Routes, null, /*#__PURE__*/React.createElement(Route, {
     path: "/",
     element: /*#__PURE__*/React.createElement(Home, null)
-  }), /*#__PURE__*/React.createElement(Route, {
-    path: "/dashboard",
-    element: /*#__PURE__*/React.createElement(Dashboard, null)
   })));
 };
 var root = createRoot(document.getElementById('root'));

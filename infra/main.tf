@@ -49,7 +49,7 @@ resource "aws_instance" "url_shortener_vm" {
     systemctl start docker
     systemctl enable docker
     docker pull ${var.docker_image}
-    docker run -d -p 80:5000 -v url_data:/data --restart unless-stopped ${var.docker_image}
+    docker run -d -p 80:5000 --restart unless-stopped ${var.docker_image}
   EOF
 
   tags = { Name = "url-shortener" }
