@@ -9,7 +9,7 @@ provider "aws" {
 }
 
 resource "aws_security_group" "url_sg" {
-  name        = "url-shortener-sg"
+  name        = "url-shortener-sg-2"
   description = "Allow HTTP and SSH"
 
   ingress {
@@ -46,8 +46,13 @@ resource "aws_instance" "url_shortener_vm" {
     #!/bin/bash
     apt update -y
     apt install -y docker.io
+
     systemctl start docker
     systemctl enable docker
+
+    usermod -aG docker ubuntu
+    sleep 10
+
     docker pull ${var.docker_image}
     docker run -d -p 80:5000 --restart unless-stopped ${var.docker_image}
   EOF
