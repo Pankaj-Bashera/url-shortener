@@ -37,8 +37,8 @@ resource "aws_security_group" "url_sg" {
 }
 
 resource "aws_instance" "url_shortener_vm" {
-  ami                    = "ami-0c55b159cbfafe1f0"   # Ubuntu 22.04 us-east-1
-  instance_type          = "t2.micro"
+  ami                    = "ami-091138d0f0d41ff90"   
+  instance_type          = "t3.micro"
   key_name               = var.key_pair_name
   vpc_security_group_ids = [aws_security_group.url_sg.id]
 
@@ -49,7 +49,7 @@ resource "aws_instance" "url_shortener_vm" {
     systemctl start docker
     systemctl enable docker
     docker pull ${var.docker_image}
-    docker run -d -p 80:5000 --restart unless-stopped ${var.docker_image}
+    docker run -d -p 80:5000 -v url_data:/data --restart unless-stopped ${var.docker_image}
   EOF
 
   tags = { Name = "url-shortener" }

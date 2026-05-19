@@ -12,5 +12,5 @@ variable "key_pair_name" {
 variable "docker_image" {
   description = "Docker image to run on the EC2 instance"
   type        = string
-  default     = "your-dockerhub-user/url-shortener:latest"
+  default     = "panku0101/url-shortener:latest"
 }

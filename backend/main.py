@@ -1,3 +1,4 @@
+from fastapi import Request
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -22,14 +23,26 @@ class URLRequest(BaseModel):
 
 
 @app.post('/shorten')
-def shorten(req: URLRequest):
-    short_id = hashlib.md5(req.original_url.encode(), usedforsecurity=False).hexdigest()[:6]
-    conn = sqlite3.connect('urls.db')
-    conn.execute('INSERT OR IGNORE INTO urls VALUES (?,?)', (short_id, req.original_url))
+def shorten(req: URLRequest, request: Request):
+    short_id = hashlib.md5(
+        req.original_url.encode(),
+        usedforsecurity=False
+    ).hexdigest()[:6]
+
+    conn = sqlite3.connect('/data/urls.db')
+    conn.execute(
+        'INSERT OR IGNORE INTO urls VALUES (?,?)',
+        (short_id, req.original_url)
+    )
     conn.commit()
     conn.close()
-    return {'short_id': short_id, 'short_url': f'http://localhost:5000/{short_id}'}
 
+    base_url = str(request.base_url).rstrip('/')
+
+    return {
+        'short_id': short_id,
+        'short_url': f'{base_url}/{short_id}'
+    }
 
 @app.get('/health')
 def health():
@@ -38,7 +51,7 @@ def health():
 
 @app.get('/{short_id}')
 def redirect(short_id: str):
-    conn = sqlite3.connect('urls.db')
+    conn = sqlite3.connect('/data/urls.db')
     row = conn.execute('SELECT original FROM urls WHERE id=?', (short_id,)).fetchone()
     conn.close()
     if not row:

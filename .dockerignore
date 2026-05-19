@@ -9,3 +9,39 @@ terraform.tfstate
 terraform.tfstate.backup
 *.tfvars
 .DS_Store
+
+
+# Git
+.git
+.gitignore
+
+# Terraform
+infra/.terraform
+infra/*.tfstate
+infra/*.tfstate.*
+infra/tfplan
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Node (if frontend exists)
+node_modules/
+
+# Docker
+Dockerfile
+docker-compose.yml
