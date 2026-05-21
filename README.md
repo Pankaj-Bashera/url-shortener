@@ -20,7 +20,7 @@ url-shortener/
 │   ├── main.tf              # Terraform — AWS EC2 + Security Group
 │   ├── variables.tf         # Input variable definitions
 │   └── outputs.tf           # Output values
-├── monitoring/
+├── monitoring/   
 │   └── prometheus.yml       # Prometheus scrape config
 ├── Dockerfile               # Container image definition
 ├── docker-compose.yml       # Local full-stack (app + Prometheus + Grafana)
