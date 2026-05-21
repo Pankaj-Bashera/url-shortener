@@ -2,7 +2,6 @@
 
 ## Project Structure
 
-
 ```
 url-shortener/
 ├── backend/
